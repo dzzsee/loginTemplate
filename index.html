@@ -9,14 +9,10 @@
 </head>
 <body>
   <!--
-    Fondo decorativo: dos "manchas" de luz difuminadas.
-    Son puramente estéticas y viven detrás de la tarjeta (z-index bajo).
+    Fondo animado: partículas doradas flotantes.
+    Viven detrás de la tarjeta (z-index bajo) y son puramente estéticas.
   -->
-  <div class="backdrop" aria-hidden="true">
-    <span class="backdrop__orb backdrop__orb--1"></span>
-    <span class="backdrop__orb backdrop__orb--2"></span>
-  </div>
-
+  <div class="backdrop" aria-hidden="true"></div>
   <!--
     Tarjeta principal.
     `.card` es una superficie de "vidrio" translúcido: tiene blur, borde

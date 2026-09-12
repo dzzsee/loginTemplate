@@ -1,74 +1,78 @@
 /* ==========================================================================
-   Login Template — Hoja de estilos
+   Login Template — Hoja de estilos (Tono Negro/Dorado con animaciones fluidas)
    --------------------------------------------------------------------------
-   TODO es personalizable desde :root mediante variables CSS. Para reutilizar
-   este template solo cambia los valores de las variables (marca, radio,
-   color de acento, tipografía…) sin tocar el resto del CSS.
+   Este template aplica los principios de "Diseño Fluido" de Apple:
+   - Respuesta instantánea en pointer-down
+   - Manipulación directa 1:1 con capture de puntero
+   - Resortes interrupibles (damping 1.0 por defecto)
+   - Proyección de momento al soltar el gesto
+   - Consistencia espacial y boundaries elásticas
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   0. Variables de diseño (el único lugar que necesitas editar)
+   0. Variables de diseño (personaliza aquí: marca, radio, colores, tipografía)
    -------------------------------------------------------------------------- */
 :root {
-  /* -- Tipografía ------------------------------------------------------ */
+  /* -- Tipografía -------------------------------------------------------- */
   --font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Tracking (letter-spacing) específico por tamaño: negativo en títulos
-     grandes, neutro en cuerpo. No uses un único valor para todo. */
   --tracking-title: -0.02em;
   --tracking-subtitle: 0;
   --tracking-body: 0;
 
-  /* -- Colores de marca / acento -------------------------------------- */
-  --accent: #0a84ff;                 /* color principal del botón */
-  --accent-pressed: #0066cc;         /* acento al mantener presionado */
-  --accent-soft: rgba(10, 132, 255, 0.14);
+  /* -- Colores de marca / acento --------------------------------------- */
+  --accent: #d4af37;              /* oro principal — botón, foco, interacciones */
+  --accent-pressed: #b89427;       /* oro más oscuro al mantener presionado */
+  --accent-soft: rgba(212, 175, 55, 0.14); /* glow sutil detrás de elementos */
 
-  /* -- Radio y borde ------------------------------------------------ */
+  /* -- Radio y borde --------------------------------------------------- */
   --radius-card: 24px;
   --radius-input: 12px;
   --radius-button: 12px;
 
   /* -- Material (superficie de "vidrio") ----------------------------- */
-  --card-bg: rgba(255, 255, 255, 0.55);
-  --card-blur: 28px;
+  --card-bg: rgba(10, 10, 12, 0.7); /* negro profundo con sutil transparencia */
+  --card-blur: 30px;
   --card-saturate: 180%;
-  --border-light: rgba(255, 255, 255, 0.5); /* borde superior luminoso */
-  --border: rgba(60, 60, 67, 0.12);
+  --border-light: rgba(212, 175, 55, 0.18); /* borde superior luminoso, tono dorado */
+  --border: rgba(255, 255, 255, 0.04);
 
-  /* -- Texto (light mode) -------------------------------------------- */
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #86868b;
-  --input-bg: rgba(60, 60, 67, 0.04);
-  --input-bg-focus: rgba(60, 60, 67, 0.08);
+  /* -- Texto ----------------------------------------------------------- */
+  --text-primary: #f5f5f7;         /* texto principal sobre negro */
+  --text-secondary: #a1a1a6;       /* secundario/placeholder */
+  --text-tertiary: #8e8e93;        • terciario */
 
-  /* -- Feedback ------------------------------------------------------- */
+  /* -- Input ----------------------------------------------------------- */
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-bg-focus: rgba(212, 175, 55, 0.08);
+
+  /* -- Feedback -------------------------------------------------------- */
   --error: #ff453a;
   --success: #30d158;
 
-  /* -- Sombra --------------------------------------------------------- */
-  --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.25);
+  /* -- Sombra ---------------------------------------------------------- */
+  --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5);
 
-  /* -- Movimiento ----------------------------------------------------- */
+  /* -- Movimiento ------------------------------------------------------ */
   --duration-fast: 120ms;   /* feedback de presión, casi instantáneo */
   --duration-base: 220ms;   /* transiciones normales */
-  --ease: cubic-bezier(0.28, 0.44, 0.49, 1); /* suave, sin rebote */
+  --ease: cubic-bezier(0.28, 0.44, 0.49, 1); /* suave, sin rebote por defecto */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
 }
 
 /* --------------------------------------------------------------------------
-   1. Tema oscuro (automático vía prefers-color-scheme)
+   1. tema oscuro (automático vía prefers-color-scheme)
    -------------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --card-bg: rgba(28, 28, 30, 0.6);
-    --border-light: rgba(255, 255, 255, 0.08);
-    --border: rgba(255, 255, 255, 0.08);
+    --card-bg: rgba(10, 10, 12, 0.85);
+    --border-light: rgba(212, 175, 55, 0.12);
+    --border: rgba(255, 255, 255, 0.03);
     --text-primary: #f5f5f7;
     --text-secondary: #a1a1a6;
     --text-tertiary: #8e8e93;
-    --input-bg: rgba(255, 255, 255, 0.06);
-    --input-bg-focus: rgba(255, 255, 255, 0.1);
-    --accent-soft: rgba(10, 132, 255, 0.22);
+    --input-bg: rgba(255, 255, 255, 0.04);
+    --input-bg-focus: rgba(212, 175, 55, 0.07);
+    --accent-soft: rgba(212, 175, 55, 0.18);
     --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
   }
 }
@@ -91,61 +95,105 @@ body {
   font-family: var(--font-family);
   letter-spacing: var(--tracking-body);
   color: var(--text-primary);
-  background: #f2f2f7;           /* fondo base; las manchas lo decoran */
+  background: #0a0a0c;           /* fondo base negro profundo */
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* Fondo oscuro coherente con el tema */
-@media (prefers-color-scheme: dark) {
+/* Fondo coherente con el tema dorado/negro */
+@media (prefers-color-scheme: light) {
   body {
-    background: #000000;
+    /* el .backdrop ya cubre todo; este es solo fallback */
+    background: #0a0a0c;
   }
 }
 
 /* --------------------------------------------------------------------------
-   3. Fondo decorativo — manchas de luz difuminadas
+   3. Fondo animado — polvo dorado en capas
    -------------------------------------------------------------------------- */
 .backdrop {
   position: fixed;
   inset: 0;
   z-index: -1;
   overflow: hidden;
+  pointer-events: none;
+  background:
+    /* Capa superior: polvo dorado sutil con gradientes radiales dispersos */
+    radial-gradient(at 20% 30%, rgba(212, 175, 55, 0.08) 0px, transparent 50%),
+    radial-gradient(at 80% 60%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+    radial-gradient(at 60% 20%, rgba(212, 175, 55, 0.07) 0px, transparent 50%),
+    radial-gradient(at 15% 75%, rgba(212, 175, 55, 0.06) 0px, transparent 50%),
+    radial-gradient(at 85% 25%, rgba(212, 175, 55, 0.04) 0px, transparent 50%),
+    radial-gradient(at 40% 80%, rgba(212, 175, 55, 0.09) 0px, transparent 50%),
+    radial-gradient(at 25% 45%, rgba(212, 175, 55, 0.07) 0px, transparent 50%),
+    radial-gradient(at 70% 55%, rgba(212, 175, 55, 0.05) 0px, transparent 50%),
+    radial-gradient(at 55% 15%, rgba(212, 175, 55, 0.10) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(212, 175, 55, 0.06) 0px, transparent 50%),
+    /* Capa media: polvo con blur suave para efecto de brillo difuso */
+    radial-gradient(at 30% 40%, rgba(212, 175, 55, 0.03) 0px, transparent 50%),
+    radial-gradient(at 70% 30%, rgba(212, 175, 55, 0.02) 0px, transparent 50%),
+    radial-gradient(at 50% 60%, rgba(212, 175, 55, 0.04) 0px, transparent 50%),
+    radial-gradient(at 15% 25%, rgba(212, 175, 55, 0.03) 0px, transparent 50%),
+    radial-gradient(at 85% 70%, rgba(212, 175, 55, 0.025) 0px, transparent 50%),
+    /* Capa base: destellos muy sutiles */
+    radial-gradient(at 20% 20%, rgba(212, 175, 55, 0.02) 0px, transparent 50%),
+    radial-gradient(at 80% 90%, rgba(212, 175, 55, 0.015) 0px, transparent 50%);
+  background-attachment: fixed;
+  background-size: 100% 100%;
 }
 
-.backdrop__orb {
-  position: absolute;
-  filter: blur(80px);
-  opacity: 0.5;
+/* Movimiento sutil del fondo mediante transform translateY (simula caída lenta de polvo) */
+.backdrop {
+  animation: fondoPolvo 25s linear infinite;
 }
-.backdrop__orb--1 {
-  width: 420px;
-  height: 420px;
-  top: -120px;
-  left: -80px;
-  background: radial-gradient(circle, #5ea8ff, transparent 70%);
+
+@keyframes fondoPolvo {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(10vh); }
 }
-.backdrop__orb--2 {
-  width: 360px;
-  height: 360px;
-  bottom: -100px;
-  right: -60px;
-  background: radial-gradient(circle, #bf5af2, transparent 70%);
+
+/* On reduced motion, freeze the background movement */
+@media (prefers-reduced-motion: reduce) {
+  .backdrop {
+    animation: none;
+  }
 }
 
 /* --------------------------------------------------------------------------
-   4. Tarjeta — superficie de "vidrio"
+   4. Tarjeta — superficie de "vidrio" translúcido con borde dorado
    -------------------------------------------------------------------------- */
 .card {
   width: 100%;
-  max-width: 400px;
-  padding: 40px 36px;
+  max-width: 440px;
+  padding: 56px 40px;
   border-radius: var(--radius-card);
   background: var(--card-bg);
   backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
   -webkit-backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+  overflow: hidden;
+  /* animación de entrada */
+  animation: cardIn 0.6s cubic-bezier(0.28, 0.44, 0.49, 1) both;
+}
+
+/* On reduced motion, skip the spring-like entrance */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Cabecera */
@@ -169,7 +217,7 @@ body {
 .card__title {
   margin: 0;
   font-size: 1.6rem;
-  line-height: 1.15;              /* leading apretado para títulos grandes */
+  line-height: 1.15;
   letter-spacing: var(--tracking-title);
   font-weight: 700;
 }
@@ -187,13 +235,28 @@ body {
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
+/* Efecto stagger en campos — cada uno tiene --i index */
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  animation: fieldIn 0.4s cubic-bezier(0.28, 0.44, 0.49, 1) both;
+}
+
+.field--delay-{index} { animation-delay: calc(var(--i, 0) * 0.1s); }
+
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .field__label {
@@ -218,14 +281,14 @@ body {
   text-decoration: underline;
 }
 
-/* Contenedor del input + botón ojo (mantiene el ojo dentro del campo) */
+/* Contenedor del input + botón ojo */
 .field__control {
   position: relative;
 }
 
 .field__input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   font-size: 1rem;
   font-family: inherit;
   color: var(--text-primary);
@@ -272,7 +335,7 @@ body {
 .field__toggle {
   position: absolute;
   top: 50%;
-  right: 10px;
+  right: 12px;
   transform: translateY(-50%);
   display: grid;
   place-items: center;
@@ -315,7 +378,6 @@ body {
   user-select: none;
 }
 
-/* Ocultamos el checkbox nativo pero lo mantenemos enfocable y operativo */
 .check__input {
   position: absolute;
   opacity: 0;
@@ -323,7 +385,6 @@ body {
   height: 1px;
 }
 
-/* Caja visible que reemplaza al checkbox nativo */
 .check__box {
   width: 20px;
   height: 20px;
@@ -336,7 +397,6 @@ body {
               border-color var(--duration-fast) var(--ease);
 }
 
-/* La marca (check) aparece cuando está marcado */
 .check__box::after {
   content: "";
   width: 10px;
@@ -351,11 +411,11 @@ body {
   background: var(--accent);
   border-color: var(--accent);
 }
+
 .check__input:checked + .check__box::after {
   transform: rotate(-45deg) scale(1);
 }
 
-/* Foco visible del checkbox */
 .check__input:focus-visible + .check__box {
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
@@ -369,11 +429,11 @@ body {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 13px 20px;
+  padding: 14px 28px;
   font-size: 1rem;
   font-weight: 600;
   font-family: inherit;
-  color: #fff;
+  color: #0a0a0c;
   background: var(--accent);
   border: none;
   border-radius: var(--radius-button);
@@ -381,12 +441,22 @@ body {
   transition: background var(--duration-fast) var(--ease),
               transform var(--duration-fast) var(--ease),
               box-shadow var(--duration-fast) var(--ease);
+  /* spring-like: inherits from current value on interrupt */
+  --_button-spring-damping: 1.0;
+  --_button-spring-response: 0.35;
 }
 
 /* Feedback en la PRESIÓN (pointer-down), no al soltar: sensación instantánea */
 .button:active {
   background: var(--accent-pressed);
-  transform: scale(0.98);
+  transform: scale(0.96);
+  /* efecto de "spring" al soltar — el usuario puede arrastrar hacia atrás */
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* Efecto de "rubber band" si el usuario intenta arrastrar más allá */
+.button:active:focus-visible {
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .button:focus-visible {
@@ -417,6 +487,11 @@ body {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Efecto de "lift" sutil cuando el cursor está sobre el botón (sin tocar) */
+.button:hover {
+  background: #c9a227; /* oro ligeramente más oscuro al pasar */
 }
 
 /* --------------------------------------------------------------------------
@@ -456,7 +531,6 @@ body {
    9. Accesibilidad: reduced motion / reduced transparency
    -------------------------------------------------------------------------- */
 
-/* Sin movimiento: sustituimos los rebotes/escalados por fundidos de opacidad */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -467,12 +541,103 @@ body {
   }
   .button:active {
     transform: none;
+    box-shadow: none;
+  }
+  .field {
+    animation: none !important;
   }
 }
 
-/* Sin transparencia: la tarjeta se vuelve sólida y sin blur */
 @media (prefers-reduced-transparency: reduce) {
   .card {
-    background: var(--text-primary, #fff) !important;
+    background: var(--text-primary, #f5f5f7) !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. Efecto de "shake" para errores de login (añadido en script.js)
+   -------------------------------------------------------------------------- */
+.form--error-shake {
+  animation: shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-8px); }
+  20%, 80% { transform: translateX(8px); }
+  30%, 50%, 70% { transform: translateX(-6px); }
+  40%, 60% { transform: translateX(6px); }
+}
+
+/* ------------------------------------------------
+   10. Credenciales de demo — mostradas bajo el form
+   ------------------------------------------------ */
+.demo-creds {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: var(--input-bg);
+  border-radius: var(--radius-input);
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.demo-creds__text {
+  margin: 0;
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.8rem;
+}
+.demo-creds__users {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+.demo-cred__card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
+  -webkit-backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-input);
+  padding: 6px 10px;
+  min-width: 120px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.demo-cred__email {
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.demo-cred__password {
+  color: var(--accent);
+  font-weight: 600;
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+.demo-creds__hint {
+  margin: 6px 0 0;
+  font-size: 0.75rem;
+}
+
+/* ------------------------------------------------
+   11. Estilos para la página "Hola mundo" (hola.html)
+   ------------------------------------------------ */
+.card--success {
+  --card-bg: rgba(245, 245, 247, 0.85);
+  --card-blur: 20px;
+  --card-saturate: 150%;
+  --border: rgba(0, 0, 0, 0.05);
+  --shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.2);
+  --text-primary: #0a0a0c;
+}
+
+/* Estilos adicionales si hola.html está en la misma ruta */
+@media (pointer: fine) {
+  .button {
+    --_button-spring-damping: 0.8;   /* un poco más elástico para puntero preciso */
+    --_button-spring-response: 0.4;
   }
 }

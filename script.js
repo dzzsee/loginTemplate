@@ -5,7 +5,9 @@
      1. Validar email y contraseña de forma inline (no solo al hacer submit).
      2. Alternar la visibilidad de la contraseña (ojo).
      3. Gestionar el envío del formulario y mostrar el estado (cargando / ok).
-     4. Exponer una API simple y reutilizable en `window.LoginForm`.
+     4. Autenticación demo con dos usuarios integrados.
+     5. Redirigir a `hola.html` tras login exitoso.
+     6. Exponer una API simple y reutilizable en `window.LoginForm`.
 
    Cómo reutilizarlo / conectarlo a tu backend:
      const login = window.LoginForm.init({
@@ -13,12 +15,27 @@
        onError:   (message) => { ... }
      });
 
-   Si se omite `onSuccess`, el login solo valida los campos en el navegador
-   y muestra un mensaje de éxito (comportamiento por defecto de demo).
+   Si se omite `onSuccess`, el login usa la autenticación demo local.
    ========================================================================== */
 
 (function () {
   "use strict";
+
+  /* ------------------------------------------------------------------------
+   * Usuarios de demo integrados
+   * ---------------------------------------------------------------------- */
+  const DEMO_USERS = [
+    {
+      email: "demo@dorado.com",
+      password: "123456",
+      label: "Usuario demo",
+    },
+    {
+      email: "admin@dorado.com",
+      password: "admin123",
+      label: "Admin demo",
+    },
+  ];
 
   /* ------------------------------------------------------------------------
    * Utilidades
@@ -130,23 +147,47 @@
       );
     }
 
+    // Intenta autenticar con los usuarios de demo integrados.
+    function attemptDemoLogin() {
+      const emailOk = validateEmail();
+      const passwordOk = validatePassword();
+      if (!emailOk || !passwordOk) return false;
+
+      const email = emailInput.value.trim();
+      const user = DEMO_USERS.find(
+        (u) => u.email === email && u.password === passwordInput.value
+      );
+
+      if (user) {
+        // Login exitoso: mostrar estado y redirigir
+        setStatus("Sesión iniciada correctamente.", "success");
+        setLoading(true);
+        window.setTimeout(() => {
+          window.location.href = "hola.html";
+        }, 800);
+        return true;
+      }
+
+      // Credenciales incorrectas
+      setStatus("Credenciales incorrectas. Inténtalo de nuevo.", "error");
+      form.classList.add("form--error-shake");
+      window.setTimeout(() => {
+        form.classList.remove("form--error-shake");
+      }, 450);
+      return false;
+    }
+
     // Envía el formulario: valida todo, y si es válido, llama a onSuccess
-    // o, en su defecto, muestra un mensaje de éxito de demostración.
+    // o, en su defecto, intenta el login demo.
     function handleSubmit(event) {
       event.preventDefault();
       clearStatus();
 
-      const emailOk = validateEmail();
-      const passwordOk = validatePassword();
-      if (!emailOk || !passwordOk) return;
+      const result = attemptDemoLogin();
+      if (result) return; // login demo manejado internamente
 
-      const payload = {
-        email: emailInput.value.trim(),
-        password: passwordInput.value,
-        remember: form.querySelector('[name="remember"]').checked,
-      };
-
-      // Si hay manejador externo, lo invocamos (p. ej. para hacer fetch()).
+      // Si no coincidió con el demo, caemos al comportamiento externo o demo simulado.
+      // Si el usuario provee onSubmit externo, usamos ese.
       if (typeof options.onSubmit === "function") {
         Promise.resolve()
           .then(() => setLoading(true))
@@ -162,7 +203,8 @@
         return;
       }
 
-      // Comportamiento de demo (solo frontend): simula una pequeña espera.
+      // Comportamiento de demo (solo frontend): simula una pequeña espera
+      // solo si el usuario no usó credenciales demo.
       setLoading(true);
       window.setTimeout(() => {
         setLoading(false);
