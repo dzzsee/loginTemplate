@@ -1,0 +1,478 @@
+/* ==========================================================================
+   Login Template — Hoja de estilos
+   --------------------------------------------------------------------------
+   TODO es personalizable desde :root mediante variables CSS. Para reutilizar
+   este template solo cambia los valores de las variables (marca, radio,
+   color de acento, tipografía…) sin tocar el resto del CSS.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   0. Variables de diseño (el único lugar que necesitas editar)
+   -------------------------------------------------------------------------- */
+:root {
+  /* -- Tipografía ------------------------------------------------------ */
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Tracking (letter-spacing) específico por tamaño: negativo en títulos
+     grandes, neutro en cuerpo. No uses un único valor para todo. */
+  --tracking-title: -0.02em;
+  --tracking-subtitle: 0;
+  --tracking-body: 0;
+
+  /* -- Colores de marca / acento -------------------------------------- */
+  --accent: #0a84ff;                 /* color principal del botón */
+  --accent-pressed: #0066cc;         /* acento al mantener presionado */
+  --accent-soft: rgba(10, 132, 255, 0.14);
+
+  /* -- Radio y borde ------------------------------------------------ */
+  --radius-card: 24px;
+  --radius-input: 12px;
+  --radius-button: 12px;
+
+  /* -- Material (superficie de "vidrio") ----------------------------- */
+  --card-bg: rgba(255, 255, 255, 0.55);
+  --card-blur: 28px;
+  --card-saturate: 180%;
+  --border-light: rgba(255, 255, 255, 0.5); /* borde superior luminoso */
+  --border: rgba(60, 60, 67, 0.12);
+
+  /* -- Texto (light mode) -------------------------------------------- */
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --input-bg: rgba(60, 60, 67, 0.04);
+  --input-bg-focus: rgba(60, 60, 67, 0.08);
+
+  /* -- Feedback ------------------------------------------------------- */
+  --error: #ff453a;
+  --success: #30d158;
+
+  /* -- Sombra --------------------------------------------------------- */
+  --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.25);
+
+  /* -- Movimiento ----------------------------------------------------- */
+  --duration-fast: 120ms;   /* feedback de presión, casi instantáneo */
+  --duration-base: 220ms;   /* transiciones normales */
+  --ease: cubic-bezier(0.28, 0.44, 0.49, 1); /* suave, sin rebote */
+}
+
+/* --------------------------------------------------------------------------
+   1. Tema oscuro (automático vía prefers-color-scheme)
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: rgba(28, 28, 30, 0.6);
+    --border-light: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.08);
+    --text-primary: #f5f5f7;
+    --text-secondary: #a1a1a6;
+    --text-tertiary: #8e8e93;
+    --input-bg: rgba(255, 255, 255, 0.06);
+    --input-bg-focus: rgba(255, 255, 255, 0.1);
+    --accent-soft: rgba(10, 132, 255, 0.22);
+    --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset mínimo y base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;           /* centra la tarjeta vertical y horizontal */
+  padding: 20px;
+  font-family: var(--font-family);
+  letter-spacing: var(--tracking-body);
+  color: var(--text-primary);
+  background: #f2f2f7;           /* fondo base; las manchas lo decoran */
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Fondo oscuro coherente con el tema */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #000000;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Fondo decorativo — manchas de luz difuminadas
+   -------------------------------------------------------------------------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.backdrop__orb {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.5;
+}
+.backdrop__orb--1 {
+  width: 420px;
+  height: 420px;
+  top: -120px;
+  left: -80px;
+  background: radial-gradient(circle, #5ea8ff, transparent 70%);
+}
+.backdrop__orb--2 {
+  width: 360px;
+  height: 360px;
+  bottom: -100px;
+  right: -60px;
+  background: radial-gradient(circle, #bf5af2, transparent 70%);
+}
+
+/* --------------------------------------------------------------------------
+   4. Tarjeta — superficie de "vidrio"
+   -------------------------------------------------------------------------- */
+.card {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 36px;
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
+  -webkit-backdrop-filter: blur(var(--card-blur)) saturate(var(--card-saturate));
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Cabecera */
+.card__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.card__brand {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 8px 20px -6px var(--accent-soft);
+}
+
+.card__title {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.15;              /* leading apretado para títulos grandes */
+  letter-spacing: var(--tracking-title);
+  font-weight: 700;
+}
+
+.card__subtitle {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+  letter-spacing: var(--tracking-subtitle);
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   5. Formulario y campos
+   -------------------------------------------------------------------------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Fila que agrupa el label y el enlace "olvidé contraseña" */
+.field__labelrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.field__link {
+  font-size: 0.8rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+.field__link:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor del input + botón ojo (mantiene el ojo dentro del campo) */
+.field__control {
+  position: relative;
+}
+
+.field__input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-input);
+  outline: none;
+  transition: background var(--duration-base) var(--ease),
+              border-color var(--duration-base) var(--ease),
+              box-shadow var(--duration-base) var(--ease);
+}
+
+.field__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Foco claro: borde de acento + halo suave */
+.field__input:focus-visible {
+  border-color: var(--accent);
+  background: var(--input-bg-focus);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* Estado de error: borde rojo, halo rojo suave */
+.field__input[aria-invalid="true"] {
+  border-color: var(--error);
+  box-shadow: 0 0 0 4px rgba(255, 69, 58, 0.12);
+}
+
+/* Cuando hay botón ojo, el input deja espacio a la derecha */
+.field__control .field__input {
+  padding-right: 48px;
+}
+
+/* Mensaje de error (vacío por defecto, lo rellena JS) */
+.field__error {
+  margin: 0;
+  min-height: 0;
+  font-size: 0.8rem;
+  color: var(--error);
+}
+
+/* Botón de mostrar/ocultar contraseña */
+.field__toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+.field__toggle:hover {
+  background: var(--input-bg-focus);
+  color: var(--text-primary);
+}
+
+/* Los iconos de ojo se alternan al hacer clic */
+.eye--closed {
+  display: none;
+}
+.field__toggle--visible .eye--open {
+  display: none;
+}
+.field__toggle--visible .eye--closed {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   6. Checkbox "recordarme" (personalizado pero accesible)
+   -------------------------------------------------------------------------- */
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+/* Ocultamos el checkbox nativo pero lo mantenemos enfocable y operativo */
+.check__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+/* Caja visible que reemplaza al checkbox nativo */
+.check__box {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--text-tertiary);
+  display: grid;
+  place-items: center;
+  background: var(--input-bg);
+  transition: background var(--duration-fast) var(--ease),
+              border-color var(--duration-fast) var(--ease);
+}
+
+/* La marca (check) aparece cuando está marcado */
+.check__box::after {
+  content: "";
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) scale(0);
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.check__input:checked + .check__box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.check__input:checked + .check__box::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+/* Foco visible del checkbox */
+.check__input:focus-visible + .check__box {
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* --------------------------------------------------------------------------
+   7. Botón de envío
+   -------------------------------------------------------------------------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease),
+              transform var(--duration-fast) var(--ease),
+              box-shadow var(--duration-fast) var(--ease);
+}
+
+/* Feedback en la PRESIÓN (pointer-down), no al soltar: sensación instantánea */
+.button:active {
+  background: var(--accent-pressed);
+  transform: scale(0.98);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* Spinner (oculto por defecto; se muestra durante el envío) */
+.button__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.button--loading .button__spinner {
+  display: block;
+}
+.button--loading .button__label {
+  opacity: 0.7;
+}
+.button:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   8. Pie del formulario + estado global
+   -------------------------------------------------------------------------- */
+.form__footer {
+  margin: 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.form__link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.form__link:hover {
+  text-decoration: underline;
+}
+
+/* Mensaje global (éxito/error de envío). Rellenado por script.js */
+.form__status {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  min-height: 1em;
+}
+.form__status--error {
+  color: var(--error);
+}
+.form__status--success {
+  color: var(--success);
+}
+
+/* --------------------------------------------------------------------------
+   9. Accesibilidad: reduced motion / reduced transparency
+   -------------------------------------------------------------------------- */
+
+/* Sin movimiento: sustituimos los rebotes/escalados por fundidos de opacidad */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .button:active {
+    transform: none;
+  }
+}
+
+/* Sin transparencia: la tarjeta se vuelve sólida y sin blur */
+@media (prefers-reduced-transparency: reduce) {
+  .card {
+    background: var(--text-primary, #fff) !important;
+  }
+}
